@@ -5,6 +5,7 @@ class Blockchain{
        this.chain=[Block.genesis()];
     }
     addBlock({data}){
+
         const newBlock=Block.mineBlock({prevBlock:this.chain[this.chain.length-1],data});
         this.chain.push(newBlock);
     }  
@@ -31,12 +32,17 @@ class Blockchain{
           return false;
         }
         for (let i=1;i<chain.length;i++){
-            const{timestamp,prevHash,hash,data,nonce, difficulty}=chain[i]; // destructuring the chain 
+            const{timestamp,prevHash,hash,data,nonce, difficulty}=chain[i];
+             // destructuring the chain
+             const lastDifficulty=chain[i-1].difficulty; 
             const realLastHash=chain[i-1].hash;
 
              if(prevHash!= realLastHash){
             return false;
-
+             }
+             if(Math.abs(lastDifficulty-difficulty)>1)
+             {
+                return false;
              }
              const validatedHash=cryptoHash(timestamp,prevHash,data,nonce,difficulty);
              if(hash!==validatedHash){
